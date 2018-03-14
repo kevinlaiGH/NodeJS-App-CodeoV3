@@ -18,7 +18,22 @@ router.route('/contact')
   })
   /* creating a form to submit for POST req*/
   .post(function (req, res, next) {
-    res.render('thank you', { title: 'Codeo - a collaborative platform for pair-programming' });
+    req.checkBody('name', 'Empty name').notEmpty();
+    req.checkBody('email', 'Invalid email').isEmail();
+    req.checkBody('message', 'Empty message').notEmpty();
+    var errors = req.validationErrors();
+
+    if (errors) {
+      res.render('contact', {
+        title: 'Codeo - a collaborative platform for pair-programming',
+        name: req.body.name,
+        email: req.body.email,
+        message: req.body.message,
+        errorMessages: errors
+      });
+    } else {
+      res.render('thank', { title: 'Codeo - a collaborative platform for pair-programming' });
+    }
   });
 
 module.exports = router;
